@@ -34,7 +34,42 @@ def build_requirement_context(manual_text, jira_context):
     """.strip()    
 
 def build_prompt(feature_type, combined_requirement):
-    """Create the OpenAI prompt."""
+    """Create the OpenAI prompt, customized by feature type."""
+
+      # Extra guidance per feature type
+    feature_type_guidance = {
+        "UI Feature": """
+        When the feature type is a UI Feature:
+        - Emphasize usability, accessibility, and user flows.
+        - Call out client-side and server-side validation.
+        - Include cross-browser / cross-device behavior and layout edge cases.
+        """,
+        "API Endpoint": """
+        When the feature type is an API Endpoint:
+        - Focus on request/response contracts, status codes, and error handling.
+        - Include tests for validation, authentication/authorization, rate limits, and idempotency.
+        - Call out backward compatibility risks and versioning concerns if relevant.
+        """,
+        "Authentication Flow": """
+        When the feature type is an Authentication Flow:
+        - Prioritize security test cases (session handling, tokens, cookies, logout, MFA).
+        - Include tests around password policies, reset flows, lockout, and brute-force protection.
+        - Map risks to common OWASP categories where applicable.
+        """,
+        "File Upload": """
+        When the feature type is a File Upload:
+        - Emphasize file size/type limits, content validation, and malware scanning.
+        - Include tests for partial uploads, timeouts, retries, and cleanup of temp files.
+        - Cover storage, encryption, and access control for uploaded content.
+        """,
+        "Payment Flow": """
+        When the feature type is a Payment Flow:
+        - Focus on correctness of charges, refunds, and idempotency of payment requests.
+        - Include tests for failures (network issues, declines, timeouts) and recovery behavior.
+        - Call out security, compliance, and auditability (logging, reconciliation) considerations.
+        """,
+    }
+    extra_instructions = feature_type_guidance.get(feature_type, "")
     return f"""
     You are a senior QA Architect focused on shift-left quality engineering.
 

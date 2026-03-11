@@ -1,4 +1,6 @@
 import streamlit as st
+from openai import OpenAI
+client = OpenAI()
 
 # -----------------------------
 # Audio functions
@@ -18,8 +20,16 @@ def transcribe_audio(audio_value):
 
 
 def update_text_from_audio(audio_value):
-    """Append transcribed audio into the editable text box."""
+    """Append transcribed audio into the editable text box once per recording."""
     if audio_value is None:
+        return
+
+    # Use file size as a simple "id" for the current recording
+    audio_size = getattr(audio_value, "size", None)
+    last_size = st.session_state.get("last_audio_size")
+
+    # If we've already processed this exact recording, do nothing
+    if audio_size is not None and last_size == audio_size:
         return
 
     transcript = transcribe_audio(audio_value)
@@ -28,3 +38,7 @@ def update_text_from_audio(audio_value):
         st.session_state.feature_text += "\n" + transcript
     else:
         st.session_state.feature_text = transcript
+
+     # Remember that we've consumed this recording
+    if audio_size is not None:
+        st.session_state.last_audio_size = audio_size
