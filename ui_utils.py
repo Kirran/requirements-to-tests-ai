@@ -93,7 +93,7 @@ def extract_confidence_level(text: str) -> str | None:
 
 def build_testing_readiness_decision(parsed_sections: dict) -> dict:
     quality_text = parsed_sections.get("Requirement Quality Score", "")
-    gaps_text = parsed_sections.get("Requirement Gaps", "")
+    gaps_text = parsed_sections.get("Requirement Gaps & Suggested Improvements", "")
     risk_text = parsed_sections.get("Engineering Risks", "")
 
     score = extract_quality_score(quality_text)
