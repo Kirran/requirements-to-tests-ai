@@ -1,28 +1,37 @@
 import re
-from llm.prompts import SECTION_NAMES
+from llm.schema import SECTION_SCHEMA
+import streamlit as st
+
+
 
 def parse_ai_output(output_text):
-    sections = {name: "" for name in SECTION_NAMES}
-    current_section = None
-    lines = output_text.splitlines()
+    sections = {key: "" for key in SECTION_SCHEMA.keys()}
+    current_key = None
 
-    for line in lines:
+    for line in output_text.splitlines():
         stripped = line.strip()
 
-        matched_section = None
-        for section in SECTION_NAMES:
-            if stripped == section or stripped == f"{section}:":
-                matched_section = section
+        # normalize heading line
+        normalized = stripped.lstrip("#").strip()
+        normalized = normalized.strip("*").strip()
+        normalized = normalized.rstrip(":").strip()
+
+        matched_key = None
+        for key, label in SECTION_SCHEMA.items():
+            if normalized == label:
+                matched_key = key
                 break
 
-        if matched_section:
-            current_section = matched_section
+        if matched_key:
+            current_key = matched_key
             continue
 
-        if current_section:
-            sections[current_section] += line + "\n"
+        if current_key:
+            sections[current_key] += line + "\n"
 
-    return {k: v.strip() for k, v in sections.items()}
+    parsed_sections = {k: v.strip() for k, v in sections.items()}
+    
+    return parsed_sections
 
 def extract_risk_level(text):
     if not text:

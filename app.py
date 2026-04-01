@@ -1,10 +1,9 @@
 import streamlit as st
 from jira_utils import build_jira_context
 from audio_utils import update_text_from_audio
-from ai_utils import (
-    build_requirement_context,
-    call_openai_api
-)
+from context import build_requirement_context
+from llm.client import call_openai_api
+
 from ui_utils import (
     render_readiness_summary,
     render_ai_sections,
@@ -15,7 +14,7 @@ from ui_utils import (
 )
 
 from llm.parsing import parse_ai_output
-from llm.prompts import build_prompt
+from llm.prompt_builder import build_prompt
 
 FEATURE_TYPES = [
     "UI Feature",
@@ -27,6 +26,12 @@ FEATURE_TYPES = [
 
 def main():
     st.title("ReqScope AI — AI Requirement Analyzer & Test Strategy Generator")
+
+    st.set_page_config(
+        page_title="Engineering Quality Readiness Agent",
+        page_icon="📋",
+        layout="wide"
+    )
 
     if "feature_text" not in st.session_state:
         st.session_state.feature_text = ""

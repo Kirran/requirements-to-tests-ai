@@ -1,17 +1,4 @@
-SECTION_NAMES = [
-    "Requirement Quality Assessment",
-    "Requirement Summary",
-    "Requirement Gaps & Suggested Improvements",
-    "Engineering Risks",
-    "Test Strategy Summary",
-    "Functional Test Cases",
-    "Negative Test Cases",
-    "Edge Cases",
-    "Security Test Cases",
-    "Root Cause Signals",
-    "Observability / Logging Recommendations",
-    "Requirement Quality Score",
-]
+
 
 def build_prompt(feature_type, combined_requirement):
     """Create the OpenAI prompt, customized by feature type."""

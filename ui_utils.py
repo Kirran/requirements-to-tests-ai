@@ -2,6 +2,7 @@ import re
 import streamlit as st
 from llm.parsing import extract_quality_score, extract_risk_level
 from decision.readiness import extract_confidence_level, build_testing_readiness_decision
+from llm.schema import SECTION_SCHEMA
 
 def render_requirement_preview(jira_ticket, issue_data):
     if issue_data:
@@ -31,8 +32,8 @@ def render_input_sources(jira_ticket, manual_text, audio_value):
 
 def render_readiness_summary(parsed_sections):
 
-    quality_text = parsed_sections.get("Requirement Quality Score", "")
-    risk_text = parsed_sections.get("Engineering Risks", "")
+    quality_text = parsed_sections.get("quality_score", "")
+    risk_text = parsed_sections.get("risks", "")
 
     score = extract_quality_score(quality_text)
     risk_level = extract_risk_level(risk_text)
@@ -84,43 +85,44 @@ def render_ai_sections(parsed_sections):
     st.subheader("AI-Assisted Requirement Analysis")
 
     hidden_sections = {
-        "Requirement Quality Score",
-        "Testing Readiness Notes",
+        "quality_score",
+        "testing_readiness_notes",
     }  
     
     display_names = {
-        "Root Cause Signals": "Potential Failure Causes",
+        "root_cause_signals": "Potential Failure Causes",
     }
     analysis_sections = [
-        "Requirement Quality Assessment",
-        "Requirement Summary",
-        "Requirement Gaps & Suggested Improvements",
-        "Engineering Risks",
-        "Test Strategy Summary",
+        "quality_assessment",
+        "requirement_summary",
+        "gaps",
+        "risks",
+        "test_strategy",
     ]
 
     test_sections = [
-        "Functional Test Cases",
-        "Negative Test Cases",
-        "Edge Cases",
-        "Security Test Cases",
+        "functional_tests",
+        "negative_tests",
+        "edge_cases",
+        "security_tests",
     ]
 
     engineering_sections = [
-        "Root Cause Signals",
-        "Observability / Logging Recommendations",
+        "root_cause_signals",
+        "observability",
+        "feature_type_guidance",
     ]
 
-    def render_group(title, section_list):
+    def render_group(title, section_keys):
         st.markdown(f"### {title}")
-        for section_name in section_list:
-            if section_name in hidden_sections:
+        for section_key in section_keys:
+            if section_key in hidden_sections:
                 continue
 
-            content = parsed_sections.get(section_name, "")
-            label = display_names.get(section_name, section_name)
+            content = parsed_sections.get(section_key, "")
+            label = display_names.get(section_key, SECTION_SCHEMA.get(section_key, section_key))
 
-            with st.expander(label, expanded=(section_name == "Requirement Quality Assessment")):
+            with st.expander(label, expanded=(section_key == "quality_assessment")):
                 if content:
                     st.write(content)
                 else:
@@ -158,20 +160,16 @@ def download_test_design(jira_ticket, parsed_sections):
     markdown_output = "# Test Design\n\n"
     markdown_output += f"Ticket: {jira_ticket if jira_ticket else 'No JIRA ticket provided'}\n\n"
 
-    for section_name, content in parsed_sections.items():
-        markdown_output += f"## {section_name}\n"
+    for section_key, content in parsed_sections.items():
+        label = SECTION_SCHEMA.get(section_key, section_key)
+        markdown_output += f"## {label}\n"
         markdown_output += f"{content if content else 'No content returned.'}\n\n"
-
+    
     st.download_button(
         label="Download Test Design",
         data=markdown_output,
         file_name=f"{jira_ticket}_test_design.md" if jira_ticket else "test_design.md",
         mime="text/markdown"
-    )
-    st.set_page_config(
-        page_title="JIRA Assistant",
-        page_icon="📋",
-        layout="wide"
     )
 
 

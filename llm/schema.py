@@ -1,0 +1,30 @@
+# SECTION_NAMES = [
+#     "Requirement Quality Assessment",
+#     "Requirement Summary",
+#     "Requirement Gaps & Suggested Improvements",
+#     "Engineering Risks",
+#     "Test Strategy Summary",
+#     "Functional Test Cases",
+#     "Negative Test Cases",
+#     "Edge Cases",
+#     "Security Test Cases",
+#     "Root Cause Signals",
+#     "Observability / Logging Recommendations",
+#     "Requirement Quality Score",
+# ]
+
+SECTION_SCHEMA = {
+    "quality_assessment": "Requirement Quality Assessment",
+    "requirement_summary": "Requirement Summary",
+    "gaps": "Requirement Gaps & Suggested Improvements",
+    "risks": "Engineering Risks",
+    "test_strategy": "Test Strategy Summary",
+    "functional_tests": "Functional Test Cases",
+    "negative_tests": "Negative Test Cases",
+    "edge_cases": "Edge Cases",
+    "security_tests": "Security Test Cases",
+    "root_cause_signals": "Root Cause Signals",
+    "observability": "Observability / Logging Recommendations",
+    "quality_score": "Requirement Quality Score",
+    "feature_type_guidance": "Additional guidance for this feature type",
+}
