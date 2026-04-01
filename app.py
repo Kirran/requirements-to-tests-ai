@@ -12,7 +12,8 @@ from ui_utils import (
     render_ai_sections,
     download_test_design,
     render_input_sources,
-    render_requirement_preview
+    render_requirement_preview,
+    render_testing_readiness_decision
 )
 
 FEATURE_TYPES = [
@@ -24,7 +25,7 @@ FEATURE_TYPES = [
 ]
 
 def main():
-    st.title("Specs to Tests - AI Test Design Assistant")
+    st.title("ReqScope AI — AI Requirement Analyzer & Test Strategy Generator")
 
     if "feature_text" not in st.session_state:
         st.session_state.feature_text = ""
@@ -72,6 +73,7 @@ def main():
         render_requirement_preview(jira_ticket, issue_data)
         render_input_sources(jira_ticket, manual_text, audio_value)
         render_readiness_summary(parsed_sections)
+        render_testing_readiness_decision(parsed_sections)
         render_ai_sections(parsed_sections)
         download_test_design(jira_ticket, parsed_sections)
 
