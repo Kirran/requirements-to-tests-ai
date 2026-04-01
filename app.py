@@ -3,8 +3,6 @@ from jira_utils import build_jira_context
 from audio_utils import update_text_from_audio
 from ai_utils import (
     build_requirement_context,
-    build_prompt,
-    parse_ai_output,
     call_openai_api
 )
 from ui_utils import (
@@ -15,6 +13,9 @@ from ui_utils import (
     render_requirement_preview,
     render_testing_readiness_decision
 )
+
+from llm.parsing import parse_ai_output
+from llm.prompts import build_prompt
 
 FEATURE_TYPES = [
     "UI Feature",
